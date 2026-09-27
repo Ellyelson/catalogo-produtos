@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="top-shell">
+      <div class="top-row">
+        <nav class="categories" id="categorias">
+          <button class="active" data-cat="Todos">Todos</button>
+          <button data-cat="Vestuário">Vestuário</button>
+          <button data-cat="Cuidados Pessoais">Cuidados Pessoais</button>
+          <button data-cat="Mercado">Mercado</button>
+          <button data-cat="Casa">Casa</button>
+          <button data-cat="Tecnologia">Tecnologia</button>
+        </nav>
+
+        <div class="top-actions">
+          <select class="sort-select" id="ordenacao" aria-label="Ordenar produtos">
+            <option value="padrao">Ordenar</option>
+            <option value="menor">Menor preço</option>
+            <option value="maior">Maior preço</option>
+            <option value="recentes">Mais recentes</option>
+          </select>
+
+          <button class="icon-action" id="favoritosBtn" type="button" title="Favoritos">
+            <span class="action-icon">♡</span>
+            <span>Favoritos</span>
+          </button>
+
+          <div class="backup-menu">
+            <button class="icon-action" id="backupBtn" type="button" aria-expanded="false">
+              <span class="action-icon">↕</span>
+              <span>Backup</span>
+            </button>
+
+            <div class="backup-dropdown hidden" id="backupDropdown">
+              <button type="button" id="exportarTopo">Exportar backup</button>
+              <label for="importarTopo">Importar backup</label>
+              <input type="file" id="importarTopo" accept=".json,application/json">
+            </div>
+          </div>
+
+          <button class="add-btn" id="cadastroBtn" type="button">
+            <span>+</span>
+            <span>Novo produto</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="page-head">
+      <h1 id="tituloLista">Todos os produtos</h1>
+      <span id="contador">0 produtos</span>
+    </div>
+
+    <section id="produtos" class="grid"></section>
+
+    <section id="vazio" class="empty hidden">
+      <p>Nenhum produto encontrado.</p>
+    </section>
+  </main>
+
+  <div class="modal hidden" id="modal">
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+
+    <div class="modal-panel">
+      <div class="modal-head">
+        <div>
+          <h2 id="formTitle">Cadastrar produto</h2>
+          <p>Adicione as informações do produto ao catálogo.</p>
+        </div>
+        <button class="close-btn" id="fecharModal" type="button" aria-label="Fechar">×</button>
+      </div>
+
+      <form id="produtoForm">
+        <input type="hidden" id="editId">
+
+        <label class="field">
+          <span>Imagem</span>
+          <input id="imagem" class="file-input" type="file" accept="image/*">
+          <small>Escolha uma imagem para o produto.</small>
+        </label>
+
+        <div id="previewWrap" class="preview hidden">
+          <img id="preview" alt="Prévia da imagem">
+        </div>
+
+        <label class="field">
+          <span>Nome</span>
+          <input id="nome" required maxlength="80" placeholder="Ex.: Camiseta preta">
+        </label>
+
+        <label class="field">
+          <span>Preço (R$)</span>
+          <input id="valor" required inputmode="decimal" placeholder="39,90">
+        </label>
+
+        <label class="field">
+          <span>Link do produto</span>
+          <input id="link" type="url" required value="https://www." autocomplete="url">
+        </label>
+
+        <label class="field">
+          <span>Categoria</span>
+          <select id="categoria" required>
+            <option value="">Selecione</option>
+            <option>Vestuário</option>
+            <option>Cuidados Pessoais</option>
+            <option>Mercado</option>
+            <option>Casa</option>
+            <option>Tecnologia</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>Descrição</span>
+          <textarea id="descricao" required maxlength="1000" rows="5"
+            placeholder="Escreva detalhes, observações, tamanho, características, onde encontrou, etc."></textarea>
+          <div class="field-help">
+            <small>Máximo de 1.000 caracteres.</small>
+            <small id="contadorDescricao">0 / 1000</small>
+          </div>
+        </label>
+
+        <div class="form-actions">
+          <button type="button" class="ghost-btn" id="cancelar">Cancelar</button>
+          <button type="submit" class="save-btn" id="salvar">Cadastrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="confirm-modal hidden" id="deleteModal">
+    <div class="confirm-backdrop" id="deleteBackdrop"></div>
+    <div class="confirm-box">
+      <h3>Excluir produto?</h3>
+      <p>Esta ação não poderá ser desfeita.</p>
+      <div class="confirm-actions">
+        <button type="button" class="ghost-btn" id="cancelDelete">Cancelar</button>
+        <button type="button" class="danger-btn" id="confirmDelete">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="confirm-modal hidden" id="importModal">
+    <div class="confirm-backdrop" id="importBackdrop"></div>
+    <div class="confirm-box">
+      <h3>Importar backup?</h3>
+      <p id="importResumo">O arquivo contém 0 produtos.</p>
+      <p class="confirm-note">Os produtos atuais serão substituídos após a confirmação.</p>
+      <div class="confirm-actions">
+        <button type="button" class="ghost-btn" id="cancelImport">Cancelar</button>
+        <button type="button" class="save-btn" id="confirmImport">Importar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
